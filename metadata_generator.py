@@ -11,7 +11,7 @@ def fetch_markdown(url, firecrawl_token):
     app = FirecrawlApp(api_key=firecrawl_token)
     result = app.scrape_url(url, formats=["markdown", "html"])
     print(f"Fetched markdown from URL: {url}")
-    return result.data
+    return result
 
 def process_csv(file, firecrawl_token, chatgpt_token, additional_info, url_column):
     df = pd.read_csv(file)

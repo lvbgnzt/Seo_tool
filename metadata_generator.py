@@ -48,9 +48,16 @@ def process_csv(file, firecrawl_token, chatgpt_token, additional_info, url_colum
         md = result.get("markdown", "")
         crawl_info = result.get("result", "")
         title, desc, prompt = generate_meta_data(md, crawl_info, additional_info, chatgpt_token, url)
-        results.append({"url": url, "meta_title": title, "meta_description": desc, "prompt": prompt})
+        results.append({
+            "url": url,
+            "meta_title": title,
+            "meta_description": desc,
+            "prompt": prompt,
+            "firecrawl_raw": result
+        })
         print(f"Generated metadata for: {url}")
     return pd.DataFrame(results)
+    
 
 def run_metadata_workflow(uploaded_file, firecrawl_token, chatgpt_token, additional_info, url_column):
     result_df = process_csv(uploaded_file, firecrawl_token, chatgpt_token, additional_info, url_column)

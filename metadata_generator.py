@@ -44,7 +44,7 @@ def process_csv(file, firecrawl_token, chatgpt_token, additional_info, url_colum
     for url in df[url_column]:
         print(f"Processing URL: {url}")
         result = fetch_markdown(url, firecrawl_token)
-        markdown = result.data.markdown
+        markdown = result["data"]["markdown"]
         title, desc, prompt = generate_meta_data(markdown, additional_info, chatgpt_token, url)
         results.append({
             "url": url,

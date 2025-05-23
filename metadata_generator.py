@@ -12,45 +12,14 @@ def fetch_markdown(url, firecrawl_token):
     print(f"Fetched markdown from URL: {url}")
     return result
 
-def generate_meta_data(markdown_text, additional_info, chatgpt_token, url):
-    prompt = f"""Erstelle Meta-Titel und Meta-Beschreibung für folgende Seite: {url}
-Inhalt der Seite (Markdown):
-{markdown_text}
-
-{additional_info}
----
-Gib das Ergebnis in folgendem Format zurück:
-Meta-Titel: ...
-Meta-Beschreibung: ..."""
-    client = OpenAI(api_key=chatgpt_token)
-    print("Generating meta data with GPT-4")
-    completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    print("Received response from OpenAI")
-    output = completion.choices[0].message.content
-    title, description = "", ""
-    for line in output.split("\n"):
-        if line.lower().startswith("meta-titel"):
-            title = line.split(":", 1)[1].strip()
-        elif line.lower().startswith("meta-beschreibung"):
-            description = line.split(":", 1)[1].strip()
-    return title, description, prompt
-
 def process_csv(file, firecrawl_token, chatgpt_token, additional_info, url_column):
     df = pd.read_csv(file)
     results = []
     for url in df[url_column]:
         print(f"Processing URL: {url}")
         result = fetch_markdown(url, firecrawl_token)
-        markdown = result["data"]["markdown"]
-        title, desc, prompt = generate_meta_data(markdown, additional_info, chatgpt_token, url)
         results.append({
             "url": url,
-            "meta_title": title,
-            "meta_description": desc,
-            "prompt": prompt,
             "firecrawl_raw": result
         })
         print(f"Generated metadata for: {url}")

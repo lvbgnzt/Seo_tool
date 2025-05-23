@@ -1,6 +1,6 @@
 # app.py
 import streamlit as st
-from meta_generator import process_csv
+from metadata_generator import process_csv
 
 # Seiten-Titel
 st.title("SEO Content Assistant")

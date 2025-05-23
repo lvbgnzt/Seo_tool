@@ -23,7 +23,7 @@ Meta-Beschreibung: ..."""
     client = OpenAI(api_key=chatgpt_token)
     print("Generating meta data with GPT-4")
     completion = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}]
     )
     print("Received response from OpenAI")

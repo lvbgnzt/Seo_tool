@@ -1,6 +1,8 @@
 # app.py
 import streamlit as st
 from metadata_generator import process_csv
+import pandas as pd
+import io
 
 # Seiten-Titel
 st.title("SEO Content Assistant")
@@ -18,17 +20,24 @@ if option == "Meta-Daten erstellen":
     chatgpt_token = st.text_input("OpenAI GPT Token", type="password")
     uploaded_file = st.file_uploader("CSV-Datei mit URLs hochladen", type="csv")
     additional_info = st.text_area("Zusätzliche Informationen (optional)")
-    if st.button("Meta-Daten generieren"):
-        if uploaded_file is not None and firecrawl_token and chatgpt_token:
-            st.info("Meta-Daten werden generiert...")
-            df_results = process_csv(uploaded_file, firecrawl_token, chatgpt_token, additional_info)
-            st.success("Meta-Daten erfolgreich generiert!")
-            st.dataframe(df_results)
+    if uploaded_file is not None:
+        df_input = pd.read_csv(uploaded_file)
+        st.subheader("Vorschau der hochgeladenen Datei")
+        st.dataframe(df_input.head())
 
-            csv = df_results.to_csv(index=False).encode('utf-8')
-            st.download_button("Ergebnisse als CSV herunterladen", csv, "meta_daten.csv", "text/csv")
-        else:
-            st.warning("Bitte lade eine CSV hoch und gib beide Tokens ein.")
+        url_column = st.selectbox("Wähle die Spalte mit den URLs", df_input.columns)
+
+        if st.button("Meta-Daten generieren"):
+            if firecrawl_token and chatgpt_token:
+                st.info("Meta-Daten werden generiert...")
+                df_results = process_csv(io.StringIO(df_input.to_csv(index=False)), firecrawl_token, chatgpt_token, additional_info, url_column)
+                st.success("Meta-Daten erfolgreich generiert!")
+                st.dataframe(df_results)
+
+                csv = df_results.to_csv(index=False).encode('utf-8')
+                st.download_button("Ergebnisse als CSV herunterladen", csv, "meta_daten.csv", "text/csv")
+            else:
+                st.warning("Bitte gib beide Tokens ein.")
 
 elif option == "Alt-Texte erstellen":
     st.header("Alt-Text Generator")

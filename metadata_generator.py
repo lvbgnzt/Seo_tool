@@ -47,15 +47,8 @@ def process_csv(file, firecrawl_token, chatgpt_token, additional_info, url_colum
         print(f"Generated metadata for: {url}")
     return pd.DataFrame(results)
 
-def run_metadata_workflow(uploaded_file, firecrawl_token, chatgpt_token, additional_info):
-    df_input = pd.read_csv(uploaded_file)
-    st.subheader("Vorschau der hochgeladenen Datei")
-    st.dataframe(df_input.head())
-
-    url_column = st.selectbox("Wähle die Spalte mit den URLs", df_input.columns)
-
-    if st.button("Meta-Daten generieren"):
-        result_df = process_csv(io.StringIO(df_input.to_csv(index=False)), firecrawl_token, chatgpt_token, additional_info, url_column)
-        st.dataframe(result_df)
-        csv = result_df.to_csv(index=False).encode('utf-8')
-        st.download_button("Ergebnisse als CSV herunterladen", data=csv, file_name="meta_daten.csv", mime="text/csv")
+def run_metadata_workflow(uploaded_file, firecrawl_token, chatgpt_token, additional_info, url_column):
+    result_df = process_csv(uploaded_file, firecrawl_token, chatgpt_token, additional_info, url_column)
+    st.dataframe(result_df)
+    csv = result_df.to_csv(index=False).encode('utf-8')
+    st.download_button("Ergebnisse als CSV herunterladen", data=csv, file_name="meta_daten.csv", mime="text/csv")

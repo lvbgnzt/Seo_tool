@@ -9,10 +9,13 @@ def fetch_markdown(url, firecrawl_token):
     headers = {"Authorization": f"Bearer {firecrawl_token}"}
     response = requests.post("https://api.firecrawl.dev/v1/scrape", json={"url": url, "markdown": True}, headers=headers)
     print(f"Fetched markdown from URL: {url}")
-    return response.json().get("markdown", "")
+    return response.json()
 
-def generate_meta_data(markdown_text, additional_info, chatgpt_token, url):
+def generate_meta_data(markdown_text, crawl_info, additional_info, chatgpt_token, url):
     prompt = f"""Erstelle Meta-Titel und Meta-Beschreibung für folgende Seite: {url}
+Geparste Seitenstruktur:
+{crawl_info}
+
 {additional_info}
 ---
 {markdown_text}
@@ -41,8 +44,10 @@ def process_csv(file, firecrawl_token, chatgpt_token, additional_info, url_colum
     results = []
     for url in df[url_column]:
         print(f"Processing URL: {url}")
-        md = fetch_markdown(url, firecrawl_token)
-        title, desc, prompt = generate_meta_data(md, additional_info, chatgpt_token, url)
+        result = fetch_markdown(url, firecrawl_token)
+        md = result.get("markdown", "")
+        crawl_info = result.get("result", "")
+        title, desc, prompt = generate_meta_data(md, crawl_info, additional_info, chatgpt_token, url)
         results.append({"url": url, "meta_title": title, "meta_description": desc, "prompt": prompt})
         print(f"Generated metadata for: {url}")
     return pd.DataFrame(results)

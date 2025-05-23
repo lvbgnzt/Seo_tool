@@ -16,8 +16,7 @@ if option == "Meta-Daten erstellen":
     firecrawl_token = st.text_input("Firecrawl API Token", type="password")
     chatgpt_token = st.text_input("OpenAI GPT Token", type="password")
     uploaded_file = st.file_uploader("CSV-Datei mit URLs hochladen", type="csv")
-    title = st.text_input("Seitentitel")
-    description = st.text_area("Beschreibung")
+    additional_info = st.text_area("Zusätzliche Informationen (optional)")
     if st.button("Meta-Daten generieren"):
         if uploaded_file is not None and firecrawl_token and chatgpt_token:
             st.info("Meta-Daten werden generiert...")

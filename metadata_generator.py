@@ -21,9 +21,21 @@ def process_csv(file, firecrawl_token, chatgpt_token, additional_info, url_colum
         print(f"Processing URL: {url}")
         result = app.scrape_url(url, formats=["markdown", "html"])
         print(result)
+        prompt = f"Erstelle einen Meta-Titel und eine Meta-Beschreibung für die folgende Seite:\n\n{result.markdown}"
+        client = OpenAI(api_key=chatgpt_token)
+        completion = client.chat.completions.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        text = completion.choices[0].message.content
+        title, description = text.split("Meta-Beschreibung:", 1)
+        title = title.replace("Meta-Titel:", "").strip()
+        description = description.strip()
         results.append({
             "url": url,
-            "markdown": result.markdown
+            "markdown": result.markdown,
+            "meta_title": title,
+            "meta_description": description
         })
     return pd.DataFrame(results)
     

@@ -4,4 +4,4 @@ streamlit
 pandas
 requests
 OpenAI
-firecrawl
+firecrawl-py

@@ -23,7 +23,7 @@ def process_csv(file, firecrawl_token, chatgpt_token, additional_info, url_colum
         print(result)
         results.append({
             "url": url,
-            "firecrawl_raw": result.model_dump()
+            "markdown": result.markdown
         })
     return pd.DataFrame(results)
     

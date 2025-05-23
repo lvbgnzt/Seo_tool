@@ -18,6 +18,9 @@ if option == "Meta-Daten erstellen":
     st.header("Meta-Daten Generator")
     firecrawl_token = st.text_input("Firecrawl API Token", type="password")
     chatgpt_token = st.text_input("OpenAI GPT Token", type="password")
+    st.subheader("Was soll generiert werden?")
+    generate_title = st.checkbox("Meta-Titel", value=True)
+    generate_description = st.checkbox("Meta-Beschreibung", value=True)
     uploaded_file = st.file_uploader("CSV-Datei mit URLs hochladen", type="csv")
     additional_info = st.text_area("Zusätzliche Informationen (optional)")
     if uploaded_file is not None:
@@ -30,7 +33,15 @@ if option == "Meta-Daten erstellen":
         if st.button("Meta-Daten generieren"):
             if firecrawl_token and chatgpt_token:
                 st.info("Meta-Daten werden generiert...")
-                df_results = process_csv(io.StringIO(df_input.to_csv(index=False)), firecrawl_token, chatgpt_token, additional_info, url_column)
+                df_results = process_csv(
+                    io.StringIO(df_input.to_csv(index=False)),
+                    firecrawl_token,
+                    chatgpt_token,
+                    additional_info,
+                    url_column,
+                    generate_title,
+                    generate_description
+                )
                 st.success("Meta-Daten erfolgreich generiert!")
                 st.dataframe(df_results)
 

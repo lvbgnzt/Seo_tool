@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import requests
+import json
 
 import io
 from openai import OpenAI
@@ -20,7 +21,7 @@ def process_csv(file, firecrawl_token, chatgpt_token, additional_info, url_colum
         result = fetch_markdown(url, firecrawl_token)
         results.append({
             "url": url,
-            "firecrawl_raw": result
+            "firecrawl_raw": json.dumps(result)
         })
         print(f"Generated metadata for: {url}")
     return pd.DataFrame(results)

@@ -34,7 +34,7 @@ Meta-Beschreibung: ..."""
             title = line.split(":", 1)[1].strip()
         elif line.lower().startswith("meta-beschreibung"):
             description = line.split(":", 1)[1].strip()
-    return title, description
+    return title, description, prompt
 
 def process_csv(file, firecrawl_token, chatgpt_token, additional_info, url_column):
     df = pd.read_csv(file)
@@ -42,8 +42,8 @@ def process_csv(file, firecrawl_token, chatgpt_token, additional_info, url_colum
     for url in df[url_column]:
         print(f"Processing URL: {url}")
         md = fetch_markdown(url, firecrawl_token)
-        title, desc = generate_meta_data(md, additional_info, chatgpt_token)
-        results.append({"url": url, "meta_title": title, "meta_description": desc})
+        title, desc, prompt = generate_meta_data(md, additional_info, chatgpt_token)
+        results.append({"url": url, "meta_title": title, "meta_description": desc, "prompt": prompt})
         print(f"Generated metadata for: {url}")
     return pd.DataFrame(results)
 

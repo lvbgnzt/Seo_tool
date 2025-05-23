@@ -13,12 +13,17 @@ option = st.sidebar.selectbox(
 # Dynamisches Laden des passenden Moduls
 if option == "Meta-Daten erstellen":
     st.header("Meta-Daten Generator")
+    firecrawl_token = st.text_input("Firecrawl API Token", type="password")
+    chatgpt_token = st.text_input("OpenAI GPT Token", type="password")
+    uploaded_file = st.file_uploader("CSV-Datei mit URLs hochladen", type="csv")
     title = st.text_input("Seitentitel")
     description = st.text_area("Beschreibung")
     if st.button("Meta-Daten generieren"):
-        # Platzhalter für Logik
-        st.success(f"Meta Title: {title[:60]}...")
-        st.info(f"Meta Description: {description[:160]}...")
+        if uploaded_file is not None and firecrawl_token and chatgpt_token:
+            st.info("Meta-Daten werden generiert...")
+            # Hier wird später die Meta-Daten-Logik integriert
+        else:
+            st.warning("Bitte lade eine CSV hoch und gib beide Tokens ein.")
 
 elif option == "Alt-Texte erstellen":
     st.header("Alt-Text Generator")

@@ -16,10 +16,16 @@ def fetch_markdown(url, firecrawl_token):
 def process_csv(file, firecrawl_token, chatgpt_token, additional_info, url_column):
     df = pd.read_csv(file)
     app = FirecrawlApp(api_key=firecrawl_token)
+    results = []
     for url in df[url_column]:
         print(f"Processing URL: {url}")
         result = app.scrape_url(url, formats=["markdown", "html"])
         print(result)
+        results.append({
+            "url": url,
+            "firecrawl_raw": result.model_dump()
+        })
+    return pd.DataFrame(results)
     
 
 def run_metadata_workflow(uploaded_file, firecrawl_token, chatgpt_token, additional_info, url_column):

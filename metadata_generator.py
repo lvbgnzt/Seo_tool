@@ -12,10 +12,10 @@ def fetch_markdown(url, firecrawl_token):
     print(f"Fetched markdown from URL: {url}")
     return result
 
-def generate_meta_data(firecrawl_response, additional_info, chatgpt_token, url):
+def generate_meta_data(markdown_text, additional_info, chatgpt_token, url):
     prompt = f"""Erstelle Meta-Titel und Meta-Beschreibung für folgende Seite: {url}
-Firecrawl-Antwort:
-{firecrawl_response}
+Inhalt der Seite (Markdown):
+{markdown_text}
 
 {additional_info}
 ---
@@ -44,7 +44,8 @@ def process_csv(file, firecrawl_token, chatgpt_token, additional_info, url_colum
     for url in df[url_column]:
         print(f"Processing URL: {url}")
         result = fetch_markdown(url, firecrawl_token)
-        title, desc, prompt = generate_meta_data(result, additional_info, chatgpt_token, url)
+        markdown = result.data.markdown
+        title, desc, prompt = generate_meta_data(markdown, additional_info, chatgpt_token, url)
         results.append({
             "url": url,
             "meta_title": title,

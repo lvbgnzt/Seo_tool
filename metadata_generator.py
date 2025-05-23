@@ -4,12 +4,13 @@ import requests
 
 import io
 from openai import OpenAI
+from firecrawl import FirecrawlApp
 
 def fetch_markdown(url, firecrawl_token):
-    headers = {"Authorization": f"Bearer {firecrawl_token}"}
-    response = requests.post("https://api.firecrawl.dev/v1/scrape", json={"url": url, "markdown": True}, headers=headers)
+    app = FirecrawlApp(api_key=firecrawl_token)
+    result = app.scrape_url(url, formats=["markdown", "html"])
     print(f"Fetched markdown from URL: {url}")
-    return response.json()
+    return result
 
 def generate_meta_data(markdown_text, crawl_info, additional_info, chatgpt_token, url):
     prompt = f"""Erstelle Meta-Titel und Meta-Beschreibung für folgende Seite: {url}

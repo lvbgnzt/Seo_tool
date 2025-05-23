@@ -1,5 +1,6 @@
 # app.py
 import streamlit as st
+from meta_generator import process_csv
 
 # Seiten-Titel
 st.title("SEO Content Assistant")
@@ -20,7 +21,12 @@ if option == "Meta-Daten erstellen":
     if st.button("Meta-Daten generieren"):
         if uploaded_file is not None and firecrawl_token and chatgpt_token:
             st.info("Meta-Daten werden generiert...")
-            # Hier wird später die Meta-Daten-Logik integriert
+            df_results = process_csv(uploaded_file, firecrawl_token, chatgpt_token, additional_info)
+            st.success("Meta-Daten erfolgreich generiert!")
+            st.dataframe(df_results)
+
+            csv = df_results.to_csv(index=False).encode('utf-8')
+            st.download_button("Ergebnisse als CSV herunterladen", csv, "meta_daten.csv", "text/csv")
         else:
             st.warning("Bitte lade eine CSV hoch und gib beide Tokens ein.")
 

@@ -11,8 +11,8 @@ def fetch_markdown(url, firecrawl_token):
     print(f"Fetched markdown from URL: {url}")
     return response.json().get("markdown", "")
 
-def generate_meta_data(markdown_text, additional_info, chatgpt_token):
-    prompt = f"""Erstelle Meta-Titel und Meta-Beschreibung für folgende Seite:
+def generate_meta_data(markdown_text, additional_info, chatgpt_token, url):
+    prompt = f"""Erstelle Meta-Titel und Meta-Beschreibung für folgende Seite: {url}
 {additional_info}
 ---
 {markdown_text}
@@ -42,7 +42,7 @@ def process_csv(file, firecrawl_token, chatgpt_token, additional_info, url_colum
     for url in df[url_column]:
         print(f"Processing URL: {url}")
         md = fetch_markdown(url, firecrawl_token)
-        title, desc, prompt = generate_meta_data(md, additional_info, chatgpt_token)
+        title, desc, prompt = generate_meta_data(md, additional_info, chatgpt_token, url)
         results.append({"url": url, "meta_title": title, "meta_description": desc, "prompt": prompt})
         print(f"Generated metadata for: {url}")
     return pd.DataFrame(results)
